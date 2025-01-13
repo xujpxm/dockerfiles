@@ -20,6 +20,8 @@ RUN yum -y install openssh-server unzip luajit crontabs git wget net-tools \
     && sed -i '/pam_loginuid.so/s/^/#/' /etc/pam.d/crond \
     && rm -f /tmp/*.tar.gz \
     && chmod 0600 /root/.ssh/authorized_keys \
+    && sed -i '/Port /aPort 3000' /etc/ssh/sshd_config \
+    && chmod u+s /usr/sbin/sshd \
     && chmod u+s /usr/sbin/crond
 
 COPY control.sh      /usr/local/openresty/nginx/control.sh
