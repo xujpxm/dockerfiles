@@ -2,10 +2,12 @@
 
 # 执行启动命令的方法
 start() {
-    # 启动crontab服务
+    echo "Start sshd..."
+    /usr/sbin/sshd
+
     echo "Start Crond ..."
     /usr/sbin/crond
-    # 启动Nginx
+
     echo "Start Nginx..."
     /usr/local/nginx/sbin/nginx -t -c ${NGINX_CONF}
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -g "daemon off;"
