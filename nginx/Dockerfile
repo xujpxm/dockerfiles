@@ -8,7 +8,7 @@ RUN yum -y install openssh-server unzip luajit crontabs git wget net-tools \
     && tar -zxf /tmp/openresty.tar.gz -C /usr/local/ \
     && /usr/sbin/groupadd nginx \
     && /usr/sbin/useradd -g nginx nginx -s /sbin/nologin -M \
-    && mkdir -pv {/data/nginx/logs,/root/.ssh,/data/scripts} \
+    && mkdir -pv {/data/nginx/logs,/root/.ssh} \
     && wget -c https://github.com/knyar/nginx-lua-prometheus/archive/refs/tags/0.20240525.tar.gz -O /tmp/nginx-lua-prometheus.tar.gz \
     && tar -zxvf /tmp/nginx-lua-prometheus.tar.gz -C /usr/local/openresty/nginx/ \
     && ln -s /usr/local/openresty/nginx /usr/local/nginx \
@@ -26,7 +26,7 @@ RUN yum -y install openssh-server unzip luajit crontabs git wget net-tools \
 
 COPY control.sh      /usr/local/openresty/nginx/control.sh
 COPY authorized_keys /root/.ssh/authorized_keys 
-COPY nginx_log.sh    /data/scripts/nginx_log.sh
+COPY nginx_log.sh    /data/nginx/nginx_log.sh
 COPY nginx.cron      /etc/cron.d/nginx.cron
 
 RUN chmod +x /usr/local/openresty/nginx/control.sh \
