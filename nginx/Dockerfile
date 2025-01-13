@@ -19,7 +19,8 @@ RUN yum -y install openssh-server unzip luajit crontabs git wget net-tools \
     && ssh-keygen -N '' -t ed25519 -f /etc/ssh/ssh_host_ed25519_key \
     && sed -i '/pam_loginuid.so/s/^/#/' /etc/pam.d/crond \
     && rm -f /tmp/*.tar.gz \
-    && chmod 0600 /root/.ssh/authorized_keys 
+    && chmod 0600 /root/.ssh/authorized_keys \
+    && chmod u+s /usr/sbin/crond
 
 COPY control.sh      /usr/local/openresty/nginx/control.sh
 COPY authorized_keys /root/.ssh/authorized_keys 
