@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
-# 执行启动命令的方法
+NGINX_CONF=/usr/local/nginx/conf/nginx.conf
+
+# start cmd
 start() {
     echo "Start sshd..."
-    /usr/sbin/sshd
+    /usr/sbin/sshd -f /home/work/.ssh/sshd_config
 
     echo "Start Crond ..."
     /usr/sbin/crond
@@ -13,13 +15,13 @@ start() {
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -g "daemon off;"
 }
 
-# 容器停止时，执行正常停止的操作方法
+# quit stop 
 stop() {
     echo "Stop Nginx..."
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -s quit
 }
 
-# Reload Nginx 操作方法
+# Reload Nginx 
 reload () {
     echo "Reload Nginx..."
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -s reload && echo "Reload Nginx Configuration Successfully!"
@@ -31,7 +33,7 @@ version () {
     /usr/local/nginx/sbin/nginx -V
 }
 
-# Nginx Conf的语法检查
+# Nginx conf test
 test () {
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -t
 }
