@@ -15,13 +15,13 @@ RUN yum -y install openssh-server unzip luajit crontabs git wget net-tools \
     && chown -R work. /usr/local/openresty \
     && mkdir -p /home/work/.ssh \
     && chmod 0700 /home/work/.ssh \
-    && chown -R work. /home/work/.ssh \
     && ssh-keygen -N '' -t rsa -f /home/work/.ssh/ssh_host_rsa_key \
     && ssh-keygen -N '' -t ecdsa -f /home/work/.ssh_host_ecdsa_key \
     && ssh-keygen -N '' -t ed25519 -f /home/work/.ssh/ssh_host_ed25519_key \
     && sed -i '/pam_loginuid.so/s/^/#/' /etc/pam.d/crond \
     && rm -f /tmp/*.tar.gz \
     && chmod 0600 /home/work/.ssh/authorized_keys \
+    && chown -R work. /home/work/.ssh \
     && sed -i '/Port /aPort 3000' /home/work/.ssh/sshd_config \
     && rm -f /tmp/*.tar.gz \
     && rm -rf /var/cache/yum/
