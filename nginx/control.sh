@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
-
 NGINX_CONF=/usr/local/nginx/conf/nginx.conf
+
+# trap signal and action
+trap cleanup SIGTERM SIGQUIT SIGINT
+# Quit Nginx and clean up
+cleanup() {
+    echo "STOPSIGNAL received. Performing stop action..."
+    quit
+    exit 0
+}
 
 # start cmd
 start() {
@@ -9,24 +17,27 @@ start() {
 
     echo "Start Nginx..."
     /usr/local/nginx/sbin/nginx -t -c ${NGINX_CONF}
-    /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -g "daemon off;"
+    /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -g "daemon off;" &
+    NGINX_PID=$!
+    # 等待 Nginx 进程结束
+    wait $NGINX_PID
 }
 
 # quit: Gracefully shutdown Nginx (wait for workers to finish their tasks)
 quit() {
-    echo "Quit Nginx..."
+    echo "Nginx quit..."
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -s quit
 }
 
 # stop: Immediately shutdown Nginx
 stop() {
-    echo "Stop Nginx..."
+    echo "Nginx stop..."
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -s stop
 }
 
 # Reload Nginx 
 reload() {
-    echo "Reload Nginx..."
+    echo "Nginx reload..."
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -s reload && echo "Reload Nginx Configuration Successfully!"
 }
 
@@ -40,23 +51,6 @@ version() {
 test() {
     /usr/local/nginx/sbin/nginx -c ${NGINX_CONF} -t
 }
-
-# Quit Nginx and clean up
-quitcleanup() {
-    echo "SIGQUIT received. Performing quit..."
-    quit
-    exit 0
-}
-
-# Stop Nginx and clean up
-stopcleanup() {
-    echo "SIGTERM received. Performing stop..."
-    stop
-    exit 0
-}
-
-trap quitcleanup SIGQUIT SIGINT
-trap stopcleanup SIGTERM
 
 # 执行启动命令
 if [ $# -eq 0 ] || [ "$1" = "start" ];then
@@ -85,4 +79,3 @@ elif [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 else
     echo "Error,Invalid Argument,use -h/--help to show avaliable command."
 fi
-
